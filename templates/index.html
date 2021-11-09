@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatBot 🗨</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <style>
+       
+        .container_outer{
+           width: 100%;
+            height:100%; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+         
+        }
+       
+        .container_inner{
+            width: 350px;
+            border: 1px solid black;
+            height:500px;
+            position: relative;
+            background-color: white;
+        }
+        .input{
+            position: absolute;
+            left: 0px;
+            bottom: 0px;
+            width: 350px;
+        
+         
+        }
+        .input input{
+            width:84%;
+            height: 40px;
+          
+        }
+        .input button{
+            height: 45px;
+            margin-left: -4px;
+        }
+        #chat_msg{
+            width:89%;
+            margin: 0px auto;
+            height: 450px;
+            overflow-y: scroll;
+            padding: 0px 20px;
+        }
+        ::-webkit-scrollbar {
+                display: none;
+            }
+        .user-msg{
+            background-color: skyblue;
+            text-align: right;
+            padding: 8px;
+            color: white;
+            font-weight: bold;
+        }
+        .bot-msg{
+            background-color: lightcoral;
+            padding: 8px;
+            color: white;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+
+<body>
+   
+    <div class="container_outer">
+        <h3 style="text-align: center">Chat With Chatbot</h3>
+        <div class="container_inner">
+      
+    <div id="chat_msg">
+
+    </div>
+    <div class="input">
+        <input type="text" name="msg" id="msg">
+        <button type="submit" onclick="sendrequest()">Send</button>
+    </div>
+    </div>
+</div>
+
+    <script>
+
+        function sendrequest(){
+            var usermsg = document.getElementById('msg').value;
+            var pre_msg = document.getElementById('chat_msg').innerHTML;
+            var htmldata = '<p class="user-msg">'+usermsg+'</p>';
+            pre_msg += htmldata;
+            document.getElementById('msg').value = '';
+            document.getElementById('chat_msg').innerHTML = pre_msg;
+            // $.get("/bot_reply",{msg:usermsg})
+            // .done(function(data){
+            //     console.log("data",data)
+            // var bot_htmldata = '<p>'+data+'</p>';
+            // document.getElementById('chat_msg').append(bot_htmldata);
+            // })
+            $.get({
+                    url: '/bot_reply',
+                    data: {
+                    'msg': usermsg
+                    },
+                    success: function (data) {
+                        var bot_htmldata = '<div><p class="bot-msg">'+data+'</p><div>';
+                        pre_msg += bot_htmldata;
+                        document.getElementById('chat_msg').innerHTML = pre_msg;
+                    },
+                    error: function (response) {
+                        console.log(response["responseJSON"]["error"]);
+                    }
+                });
+        }
+
+
+
+    </script>
+ 
+</body>
+</html>
